@@ -6,7 +6,7 @@ import style from './myCenter.css';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 import * as actionMethod from '../../action/index.js';
-import moment from 'moment'
+// import moment from 'moment'
 class mycenter extends Component {
     constructor(props) {
         super(props);
@@ -87,7 +87,12 @@ class mycenter extends Component {
         let {
             tempRecord
         } = this.props.record;
-        console.log(tempRecord);
+        // console.log(tempRecord);
+        // 积分
+        let count = 0;
+        this.props.habit.habitInfo.map((item) => {
+            count += item.habit.userCount;
+        })
         return (
             <div className={`${style.wrap}`}
             style={{position:'relative'}}
@@ -98,18 +103,20 @@ class mycenter extends Component {
                         <div className={`${style.pic}`}>
                             <img src="https://t1.picb.cc/uploads/2019/01/17/V6Zc6N.png" />
                         </div>
-                        {/* <span className={`${style.gender} ${style.gender_nv} iconfont icon-nvxing`}></span> */}
-                        {/* <span className={`${style.gender} ${style.gender_nan} iconfont icon-nan`}></span> */}
                     </div>
 
                     <div className={`${style.attention}`}>
-                        {/* <Link className={`${style.attention_count}`} to="/my/inserest/inserest"><strong>20</strong><span>关注</span></Link>
-                        <Link className={`${style.attention_count}`} to="/my/inserest/fans"><strong>20</strong><span>粉丝</span></Link> */}
                         <p>Hello：<span>{ this.state.userName }</span></p>
                         <p></p>
                     </div>
                 </div>
-                <p className={`${style.introduce}`}>千里之行，始于足下！</p>
+                <p className={`${style.introduce}`}>
+                    {
+                        count === 0 ?
+                        (<span>你还没有积分哦~快去养成个好习惯！</span>) :
+                        (<span>你的积分是：<span className={`${style.high}`}>{count}分！</span>越多好伙伴加入积分越高哦~</span>)
+                    }
+                </p>
 
                 <div className={`${style.otherHabit} otherHabit`}>
                     <h3 className={`${style.title}`}>我的习惯记录</h3>
@@ -117,44 +124,6 @@ class mycenter extends Component {
                         {this.habitList()}
                     </List>
                 </div>
-                {/* <div className={`${style.message} myCenter`}>
-                    <h3 className={`${style.title}`}>通知</h3>
-                    <div className={`${style.content}`}>
-
-                        <List className="">
-                            {
-                                tempRecord.map((item, index) => {
-                                    return (
-                                        (item.comment.length) == 0 ? '' : (
-                                            item.comment.map((item1, index1) => {
-                                                return (
-                                                    <List.Item
-                                                        key={index1}
-                                                        thumb={<div className={`${style.msg_userPic}`}>
-                                                            <img src="https://t1.picb.cc/uploads/2019/01/17/V6Zc6N.png" alt="" />
-                                                        </div>}
-                                                        multipleLine
-                                                    >
-                                                        <Link to={`/record/${item.habit._id}/`} className={`${style.msg_right}`}>
-                                                            <div className={`${style.msg_item}`}>
-                                                                <div className={`${style.msg_user}`}>
-                                                                    <span>{item.user.userName}</span>
-                                                                    <span className={`${style.msg_type}`}>评论了你的记录</span>
-                                                                </div>
-                                                                <p className={`${style.msg_body}`}>{item1.content}</p>
-                                                                <List.Item.Brief style={{ fontSize: "12px", margin: "0" }} >{moment(item1.time).format('YYYY-MM-DD')}</List.Item.Brief>
-                                                            </div>
-                                                        </Link>
-                                                    </List.Item>
-                                                )
-                                            })
-                                        )
-                                    )
-                                })
-                            }
-                        </List>
-                    </div>
-                </div> */}
             </div>
         )
     }

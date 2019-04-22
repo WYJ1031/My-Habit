@@ -130,7 +130,7 @@ class book extends Component {
         })
     }
     onChange = (files, type, index) => {
-        console.log(files, type, index);
+        // console.log(files, type, index);
         this.setState({
             files
         });
@@ -313,7 +313,7 @@ class book extends Component {
         let bookHabit = {}
 
         if (habitInfo[0]) {
-            console.log(habitInfo)
+            // console.log(habitInfo)
             bookHabit = habitInfo.find((item) => {
                 return item.habit._id === bookHabitId
             })
@@ -373,7 +373,6 @@ class book extends Component {
                         refreshing={this.state.refreshing}
                         onRefresh={() => {
                             this.getRecord()
-                            console.log('shuaxin')
                         }}
                     >
                         <div className={`${style.wrap}`}>

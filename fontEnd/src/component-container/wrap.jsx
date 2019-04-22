@@ -37,7 +37,7 @@ class wrap extends Component {
         var socket = io('http://127.0.0.1:3008', {});
 
         socket.on('connect', (d) => {
-            console.log('socketId:' + socket.id)
+            // console.log('socketId:' + socket.id)
         })
 
         socket.on('message', (msg) => {
@@ -49,7 +49,7 @@ class wrap extends Component {
                     }
                 })
             }
-            console.log(msg)
+            // console.log(msg)
         })
 
         async_isLogin({
@@ -72,7 +72,7 @@ class wrap extends Component {
             this.props.history.replace('/entry')
         }
         if (tempRecord && tempRecord.length <= 0 && isHaveDate === '1') {
-            console.log(tempRecord)
+            // console.log(tempRecord)
         }
     }
     onTab(tab) {
@@ -144,14 +144,18 @@ class wrap extends Component {
                         icon={<div style={{
                             width: '24px',
                             height: '24px',
-                            background: 'url(https://i.loli.net/2019/04/22/5cbd85df35f42.png) center center /  20px 20px no-repeat'
+                            background: 'url(https://i.loli.net/2019/04/22/5cbd85df35ea5.png) center center /  20px 20px no-repeat'
+
                         }}
                         />
                         }
                         selectedIcon={<div style={{
                             width: '24px',
                             height: '24px',
-                            background: 'url(https://t1.picb.cc/uploads/2019/01/17/V6Zc6N.png) center center /  24px 24px no-repeat'
+                            background: 'url(https://i.loli.net/2019/04/23/5cbdfae97849f.png) center center /  24px 24px no-repeat',
+                            filter: 'drop-shadow(24px 0 #06C1AE)',
+                            position: 'relative',
+                            left: '-24px'
                         }}
                         />
                         }
@@ -174,14 +178,17 @@ class wrap extends Component {
                         icon={<div style={{
                             width: '24px',
                             height: '24px',
-                            background: 'url(https://i.loli.net/2019/04/22/5cbd85df1f08c.png) center center /  20px 20px no-repeat'
+                            background: 'url(https://i.loli.net/2019/04/23/5cbdfce9b8106.png) center center /  20px 20px no-repeat'
                         }}
                         />
                         }
                         selectedIcon={<div style={{
                             width: '24px',
                             height: '24px',
-                            background: 'url(https://t1.picb.cc/uploads/2019/01/17/V6Zc6N.png) center center /  24px 24px no-repeat'
+                            background: 'url(https://i.loli.net/2019/04/23/5cbdfae99d2a8.png) center center /  24px 24px no-repeat',
+                            filter: 'drop-shadow(24px 0 #06C1AE)',
+                            position: 'relative',
+                            left: '-24px'
                         }}
                         />
                         }
@@ -203,14 +210,17 @@ class wrap extends Component {
                         icon={<div style={{
                             width: '24px',
                             height: '24px',
-                            background: 'url(https://i.loli.net/2019/04/22/5cbd85df35ea5.png) center center /  20px 20px no-repeat'
+                            background: 'url(https://i.loli.net/2019/04/22/5cbd85df35f42.png) center center /  20px 20px no-repeat'
                         }}
                         />
                         }
                         selectedIcon={<div style={{
                             width: '24px',
                             height: '24px',
-                            background: 'url(https://t1.picb.cc/uploads/2019/01/17/V6Zc6N.png) center center /  24px 24px no-repeat'
+                            background: 'url(https://i.loli.net/2019/04/23/5cbdfae985bbc.png) center center /  24px 24px no-repeat',
+                            filter: 'drop-shadow(24px 0 #06C1AE)',
+                            position: 'relative',
+                            left: '-24px'
                         }}
                         />
                         }
@@ -235,7 +245,10 @@ class wrap extends Component {
                             <div style={{
                                 width: '24px',
                                 height: '24px',
-                                background: 'url(https://t1.picb.cc/uploads/2019/01/17/V6Zc6N.png) center center /  24px 24px no-repeat'
+                                background: 'url(https://i.loli.net/2019/04/23/5cbdfae96e950.png) center center /  24px 24px no-repeat',
+                                filter: 'drop-shadow(24px 0 #06C1AE)',
+                                position: 'relative',
+                                left: '-24px'
                             }}
                             />
                         }

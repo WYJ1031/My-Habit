@@ -35,7 +35,7 @@ class favorite extends Component {
         //     console.log(tempRecord)
         //     this.getRecord()
         // }
-        console.log('isHaveDate:', isHaveDate);
+        // console.log('isHaveDate:', isHaveDate);
     }
     componentWillUnmount() {
         let {
@@ -87,7 +87,7 @@ class favorite extends Component {
             isHaveDate
         } = this.props.record;
         let detail = '';
-        console.log('tempRecord', tempRecord);
+        // console.log('tempRecord', tempRecord);
 
         if (tempRecord && tempRecord.length > 0) {
             detail = tempRecord.map((item, index) => {

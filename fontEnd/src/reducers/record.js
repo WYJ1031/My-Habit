@@ -38,7 +38,7 @@ export default (state, action) => {
                         tempRecord: [...recordList, ...state.tempRecord]
                     }
                 }
-                console.log(state)
+                // console.log(state)
             } else if (type === 'update') {
                 let updateRecordList = state.tempRecord.map((item) => {
                     let matchId = item._id === recordList[0]._id
@@ -78,7 +78,7 @@ export default (state, action) => {
                 }
             } else if (type === 'up') {
                 // 上拉加载
-                console.log(recordList)
+                // console.log(recordList)
                 state = {
                     ...state,
                     ...{
@@ -103,7 +103,7 @@ export default (state, action) => {
 
         case actionType.STORE__CLEAR:
             state = initRecordData;
-            console.log(state)
+            // console.log(state)
             return state
 
         default:

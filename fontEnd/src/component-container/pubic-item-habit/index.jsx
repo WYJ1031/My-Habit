@@ -58,7 +58,7 @@ class itemRecords extends Component {
             this.props.history.replace('/entry')
         }
         if (tempRecord && tempRecord.length <= 0 && isHaveDate === '1') {
-            console.log(tempRecord)
+            // console.log(tempRecord)
             this.getRecord()
         }
     }
@@ -141,7 +141,7 @@ class itemRecords extends Component {
                 isJoinHabit
             }
         }
-        console.log(searchResult)
+        // console.log(searchResult)
         let isJoin = searchResult[0] ? searchResult[0].stateName === '已加入' : false;
 
         let loading = () => {

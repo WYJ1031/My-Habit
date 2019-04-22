@@ -79,7 +79,7 @@ export default (state, action) => {
 
         case actionType.STORE__CLEAR:
             state = initHabitData;
-            console.log('habit.js-state:', state)
+            // console.log('habit.js-state:', state)
             return state
 
         default:
