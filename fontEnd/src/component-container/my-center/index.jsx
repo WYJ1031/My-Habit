@@ -63,7 +63,8 @@ class mycenter extends Component {
                     multipleLine
                     onClick={() => { }}
                 >
-                    <Link to={`/record/${item.habit._id}/`}>
+                    {/* <Link to={`/record/${item.habit._id}/`}> */}
+                    <div>
                         <div className="per-habit-name">{item.habit.habitName}</div>
                         {
                             (item.habit.userCount == 1) ?
@@ -75,8 +76,8 @@ class mycenter extends Component {
                             )
 
                         }
-                        
-                    </Link>
+                    </div>
+                    {/* </Link> */}
                 </List.Item>
             )
         })
@@ -101,7 +102,7 @@ class mycenter extends Component {
                 <div className={`${style.header}`}>
                     <div className={`${style.picWrap}`}>
                         <div className={`${style.pic}`}>
-                            <img src="https://t1.picb.cc/uploads/2019/01/17/V6Zc6N.png" />
+                            <img src="http://tjoe18.cn/logo.png" />
                         </div>
                     </div>
 

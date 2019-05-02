@@ -206,7 +206,7 @@ export default connect(
                     >
                         <div className={`${style.comment_pic}`}>
                             <div>
-                                <img src="https://t1.picb.cc/uploads/2019/01/17/V6tV87.png" />
+                                <img src="http://tjoe18.cn/logo.png" />
                             </div>
                         </div>
                         <div className={`${style.comment_body}`}

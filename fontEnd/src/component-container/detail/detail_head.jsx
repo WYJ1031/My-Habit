@@ -29,7 +29,7 @@ export default class extends Component {
             <div className={`${style.head_wrap}`}>
                 <div className={`${style.head_userInfo}`} >
                     <Link to="/discover" className={`${style.head_pic}`}>
-                        <img src="https://t1.picb.cc/uploads/2019/01/17/V6tV87.png" alt="" />
+                        <img src="http://tjoe18.cn/logo.png" alt="" />
                     </Link>
                     {/* <div className={`${style.head_pic}`}>
                         <img src="http://tsinglemon.com/images/default_head.jpg" alt="" />

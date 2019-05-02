@@ -215,7 +215,7 @@ class entry extends Component {
                 <div className={`${style.wrap}`}>
                     <div className={`${style.logo}`}>
                         <div className={`${style.logoPic}`}>
-                            <img src="https://t1.picb.cc/uploads/2019/01/17/V6tV87.png" alt="" />
+                            <img src="http://tjoe18.cn/logo.png" alt="" />
                         </div>
                     </div>
                     <InputItem
@@ -268,7 +268,7 @@ class entry extends Component {
                         <span
                             onClick={(e) => { this.onTab() }}
                         >
-                            {this.state.isRegister ? "登陆" : "注册"}
+                            {this.state.isRegister ? "登录" : "注册"}
                         </span>
                     </div>
                     <div className={`${style.btn}`}>
@@ -278,7 +278,7 @@ class entry extends Component {
                             className={`${style.button}`}
                             onClick={(e) => { this.onSubmit() }}
                         >
-                            {this.state.isRegister ? "注册" : "登陆"}
+                            {this.state.isRegister ? "注册" : "登录"}
                         </Button>
                     </div>
 

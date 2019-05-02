@@ -55,8 +55,6 @@ class my extends Component {
                 <NavBar
                     mode="light"
                     rightContent={
-                        // <span className={`${style.btn}`}>关注</span>
-                        // <span className={`${style.btn} ${style.active}`}>已关注</span>
                         <span className={`${style.btn} ${style.active}`}
                             onClick={(e) => { this.outLogin() }}
                         >退出</span>
