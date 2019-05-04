@@ -10,7 +10,8 @@ const Schema = mongoose.Schema;
 const option = {
     habitName: String,
     userCount: Number,
-    thum: String
+    thum: String,
+    userArr: Array,
 }
 const collectionName = "habit_all";
 const habit_all = db.model(collectionName,new Schema(option),collectionName);

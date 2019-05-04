@@ -34,7 +34,7 @@ app.all('*', function(req, res, next) {
 app.use(function (req, res) {
     fs.readFile(__dirname + '/index.html', function (err, data) {
         if (err) {
-            console.log(err);
+            // console.log(err);
             res.send('后台错误');
         } else {
             res.writeHead(200, {
@@ -61,7 +61,7 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     fs.readFile(__dirname + '/defaultViews/error.html', function (err, data) {
         if (err) {
-            console.log(err);
+            // console.log(err);
             res.send('后台错误');
         } else {
             res.writeHead(200, {

@@ -104,14 +104,13 @@ class habit extends Component {
             habitInfo,
             reBook
         } = this.props.habit;
-
-        if (!habitInfo) return;
+        if (habitInfo.length === 0) {
+            return (
+                <p style={{textAlign: 'center', color: '#666'}}>快快添加一个习惯吧！</p>
+            );
+        }
         return habitInfo.map((item, index) => {
             let isClockIn = reBook ? false : item.isClockIn
-            // console.log('item----:', item, moment(item.lastDate).format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'), item.habit.habitName);
-            // if (moment(item.lastDate).format('YYYY-MM-DD') !== moment().format('YYYY-MM-DD')) {
-            //     isClockIn = false;
-            // }
             return (
                 <List.Item
                     className="per-habit-item"

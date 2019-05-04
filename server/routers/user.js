@@ -120,7 +120,7 @@ router.post('/islogin', (req, res) => {
     user_security.findOne({
         token
     }, (err, msg) => {
-        console.log(msg)
+        // console.log(msg)
         if (!msg) {
             res.json({
                 isLogin: false,

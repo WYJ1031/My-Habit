@@ -92,7 +92,7 @@ function* habit(action) {
                         userId: action.data.userId,
                     }
                 })
-                console.log(sagaData)
+                // console.log(sagaData)
                 yield put(actionMethod.store_habitData(sagaData));
             } catch (e) {
                 console.log(e)
@@ -105,7 +105,7 @@ function* habit(action) {
                         userId: action.data.userId,
                     }
                 })
-                console.log(sagaData)
+                // console.log('获取的：', sagaData)
                 yield put(actionMethod.store_habitData(sagaData));
             } catch (e) {
                 console.log(e)
@@ -117,7 +117,7 @@ function* habit(action) {
                     userId: action.data.userId,
                     habitId: action.data.habitId
                 })
-                console.log(sagaData)
+                // console.log(sagaData)
                 yield put(actionMethod.store_habitData(sagaData));
             } catch (e) {
                 console.log(e)
@@ -131,7 +131,7 @@ function* habit(action) {
                         habitId: action.data.habitId
                     }
                 })
-                console.log(sagaData)
+                // console.log(sagaData)
                 yield put(actionMethod.store_habitData(sagaData));
             } catch (e) {
                 console.log(e)
@@ -169,8 +169,8 @@ function* record(action) {
                 //         headers: { 'Content-Type': 'multipart/form-data' }
                 //     }
                 // )
-                console.log("-----------------------------", formData)
-                console.log(userId, habitId, text, images)
+                // console.log("-----------------------------", formData)
+                // console.log(userId, habitId, text, images)
                 let sagaData = yield call(axios, {
                     method: 'post',
                     url: "/api/habit/record",
@@ -179,7 +179,7 @@ function* record(action) {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
-                console.log(sagaData)
+                // console.log(sagaData)
                 yield put(actionMethod.store_recordData(sagaData));
             } catch (e) {
                 console.log(e)
@@ -196,7 +196,7 @@ function* record(action) {
                     userId,
                     recordId
                 })
-                console.log(sagaData)
+                // console.log(sagaData)
                 yield put(actionMethod.store_recordData(sagaData));
             } catch (e) {
                 console.log(e)
@@ -220,7 +220,7 @@ function* record(action) {
                         type
                     }
                 })
-                console.log(sagaData)
+                // console.log(sagaData)
                 yield put(actionMethod.store_recordData(sagaData));
             } catch (e) {
                 console.log(e)
@@ -242,7 +242,7 @@ function* record(action) {
                         recordId
                     }
                 })
-                console.log(sagaData)
+                // console.log(sagaData)
                 // return;
                 yield put(actionMethod.store_recordData(sagaData));
             } catch (e) {
@@ -267,7 +267,7 @@ function* record(action) {
                     recordId,
                     content
                 })
-                console.log(sagaData)
+                // console.log(sagaData)
                 // return;
                 yield put(actionMethod.store_recordData(sagaData));
             } catch (e) {
@@ -288,7 +288,7 @@ function* record(action) {
                     recordId,
                     commentId
                 })
-                console.log(sagaData)
+                // console.log(sagaData)
                 yield put(actionMethod.store_recordData(sagaData));
             } catch (e) {
                 console.log(e)

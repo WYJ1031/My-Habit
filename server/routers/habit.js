@@ -4,6 +4,7 @@
 const express = require('express');
 const socket_io = require('socket.io');
 const mongoose = require('mongoose');
+var ObjectID = require('mongodb').ObjectID;
 
 // 设置存储上传文件名和路径的配置
 const multer = require('multer')
@@ -20,7 +21,7 @@ const multerConfig = {
         }
     }),
     fileFilter: (req, file, cb) => {
-        console.log(file)
+        // console.log(file)
         // 允许上传
         cb(null, true)
         // 不允许上传
@@ -166,7 +167,8 @@ router.get('/createHabit', (req, res) => {
         habit_all.create({
             habitName,
             userCount: 1,
-            thum: "/images/default_habit.jpg"
+            thum: "/images/default_habit.jpg",
+            userArr: [userId],
         }, (err, msg) => {
             let {
                 _id: habitId,
@@ -211,23 +213,27 @@ router.get('/addHabit', (req, res) => {
             habit_all.findOneAndUpdate({
                 _id: habitId
             }, {
-                    $inc: {
-                        "userCount": +1
-                    }
-                }, {
-                    new: true
-                }, (err, msg) => {
-                    res.json({
-                        isUpdate: true,
-                        searchResult: [
-                            {
-                                habitId: msg._id,
-                                userCount: msg.userCount,
-                                stateName: '已加入'
-                            }
-                        ]
-                    })
+                $inc: {
+                    "userCount": +1
+                },
+                $push: {
+                    "userArr": userId
+                },
+            }, {
+                new: true
+            }, (err, msg) => {
+                res.json({
+                    isUpdate: true,
+                    searchResult: [
+                        {
+                            habitId: msg._id,
+                            userCount: msg.userCount,
+                            stateName: '已加入'
+                        }
+                    ]
                 })
+            })
+
         })
     })
 })
@@ -258,7 +264,8 @@ router.post('/delHabit', (req, res) => {
         habit_all.findOneAndUpdate({
             _id: habitId
         }, {
-                $inc: { "userCount": -1 }
+                $inc: { "userCount": -1 },
+                $pull: { "userArr": userId }
             }, (err, msg) => {
                 res.json({
                     isDel: true,
@@ -388,7 +395,6 @@ router.post('/delRecord', (req, res) => {
 
 // 查找图文记录
 router.get('/getRecord', (req, res) => {
-
     let userId = req.query.userId;
     let habitId = req.query.habitId;
     // 用客户端最后一条ID作为下一条的开始
@@ -417,25 +423,123 @@ router.get('/getRecord', (req, res) => {
                 _id: { $lt: lastRecord ? lastRecord : id }
             }
             break;
-        case 'getHotRecord':
-            findObj = {
-                praiseCount: { $gt: 1 },
-                _id: { $lt: lastRecord ? lastRecord : id }
-            }
-            break;
         case 'getNewRecord':
             findObj = {
                 _id: { $lt: lastRecord ? lastRecord : id }
             }
             break;
-        // case 'getAllRecord':
-        //     findObj = {
-        //         user: userId,
-        //         _id: { $lt: lastRecord ? lastRecord : id }
-        //     }
-        //     break;
     }
-    if (type === 'myCollect') {
+    if (type === 'getHotRecord') {
+        habit_all.find({},(err, msg) => {
+            // 所有用户都存在这个数组里
+            let allUserLikeArr = [];
+            // 临时变量
+            let tempUserArr = [];
+            // 判断当前用户是否在习惯中的标志
+            let userIndex = -1;
+            for (let i=0; i<msg.length; i++) {
+                // indexOf 获取在当前习惯用户数组中当前用户的 index，没有就是-1
+                userIndex = msg[i].userArr.indexOf(userId);
+                // 大于-1说明这个习惯有当前用户
+                if (userIndex > -1) {
+                    // 临时数组存的是把当前用户去掉的数组
+                    tempUserArr = msg[i].userArr;
+                    tempUserArr.splice(userIndex, 1);
+                    // 然后把没有当前用户的数组拼接起来
+                    allUserLikeArr = allUserLikeArr.concat(tempUserArr);
+                }
+            }
+            // 出现次数统计
+            // console.log('-------allUserLikeArr--------\n', allUserLikeArr);
+            let targetUserLike = allUserLikeArr.reduce((p, k) => (p[k]++ || (p[k] = 1), p), {});
+            // console.log('-------result--------\n', targetUserLike);
+            // 在排序一下
+            let MostUserLikeArr = Object.keys(targetUserLike).sort((a,b)=>{
+                return targetUserLike[b]-targetUserLike[a];
+            });
+            // console.log('-------MostUserLikeArr--------\n', MostUserLikeArr);
+            console.log('-------MostUserLikeArr[0]--------\n', MostUserLikeArr[0]);
+            console.log(typeof(userId), typeof(MostUserLikeArr[0]))
+            habit_record.find({
+                user: ObjectID(MostUserLikeArr[0]),
+                _id: { $lt: lastRecord ? lastRecord : id }
+            }).populate({
+                path: 'user'
+            }).populate({
+                path: 'habit'
+            }).populate({
+                path: 'comment.user'
+            }).sort({ '_id': -1 }).limit(3).exec((err, msg) => {
+                if (msg.length === 0) {
+                    findObj = {
+                        praiseCount: { $gt: 1 },
+                        _id: { $lt: lastRecord ? lastRecord : id }
+                    }
+                    habit_record.find(findObj).populate({
+                        path: 'user'
+                    }).populate({
+                        path: 'habit'
+                    }).populate({
+                        path: 'comment.user'
+                    }).sort({ '_id': -1 }).limit(3).exec((err, msg) => {
+                        console.log('msg:', msg)
+                        let isHaveDate = '';
+                        if (msg.length > 0) {
+                            isHaveDate = '1';
+                        } else {
+                            isHaveDate = '0'
+                        }
+                        // 最新的评论在最上面，最早的评论在下面
+                        let margeComment = msg.map((item) => {
+                            if (item.comment[0]) {
+                                item.comment.sort((n1, n2) => {
+                                    return n2.time - n1.time
+                                })
+                            }
+                            return item
+                        })
+                        let isJoinHabit = '';
+                        let lastId = msg.length > 0 ? msg[msg.length - 1]._id : lastRecord;
+                        res.json({
+                            userId,
+                            habitId,
+                            isJoinHabit,
+                            isHaveDate,
+                            lastRecord: lastId,
+                            type: lastRecord ? 'up' : 'list',
+                            recordList: margeComment
+                        })
+                    })
+                } else {
+                    let isHaveDate = '';
+                    if (msg.length > 0) {
+                        isHaveDate = '1';
+                    } else {
+                        isHaveDate = '0'
+                    }
+                    let margeComment = msg.map((item) => {
+                        if (item.comment[0]) {
+                            item.comment.sort((n1, n2) => {
+                                return n2.time - n1.time
+                            })
+                        }
+                        return item
+                    })
+                    let isJoinHabit = '';
+                    let lastId = msg.length > 0 ? msg[msg.length - 1]._id : lastRecord;
+                    res.json({
+                        userId,
+                        habitId,
+                        isJoinHabit,
+                        isHaveDate,
+                        lastRecord: lastId,
+                        type: lastRecord ? 'up' : 'list',
+                        recordList: margeComment
+                    })
+                }
+            })
+        })
+    } else if (type === 'myCollect') {
         // 收藏的图文
         user_collect.find({
             user: userId,
@@ -493,8 +597,7 @@ router.get('/getRecord', (req, res) => {
         }).populate({
             path: 'comment.user'
         }).sort({ '_id': -1 }).limit(3).exec((err, msg) => {
-
-            console.log(type)
+            // console.log('msg:', msg)
             let isHaveDate = '';
             if (msg.length > 0) {
                 isHaveDate = '1';
@@ -514,8 +617,6 @@ router.get('/getRecord', (req, res) => {
             let lastId = msg.length > 0 ? msg[msg.length - 1]._id : lastRecord
 
             if (type === 'getHabitRecord') {
-
-                
                 user_habit.findOne({
                     user: userId,
                     habit: findObj.habit
@@ -683,185 +784,5 @@ router.post('/delComment', (req, res) => {
             })
         })
 })
-
-
-// 关注
-/**
- * 先查一下关注的人有没有关注过自己，如果没有 就先看看自己有没有文档，如果有就修改，没有就创建
- * 如果对方有创建过，就记录对方的isLike作为相互关注的依据，然后同样先判断自己有没有文档，如果有就修改，没有就创建
- */
-router.get('/attention', (req, res) => {
-    let userId = req.query.userId
-    let attentionId = req.query.attention
-
-    user_attention.findOne({
-        user: attentionId,
-        attention: userId
-    }, (err, msg) => {
-        // 如果对方从来没有关注你
-        if (!msg) {
-            user_attention.findOne({
-                user: userId,
-                attention: attentionId
-            }, (err, msg) => {
-                if (msg) {
-                    let selfIsLike = !msg.state.isLike;
-                    user_attention.update({
-                        user: userId,
-                        attention: attentionId
-                    }, {
-                            $set: {
-                                "state.isLike": selfIsLike
-                            }
-                        }, (err, msg) => {
-                            res.json({
-                                msg: selfIsLike ? "成功关注" : "取消关注"
-                            })
-                        })
-                } else {
-                    user_attention.create({
-                        user: userId,
-                        attention: attentionId,
-                        "state.isLike": true,
-                        "state.mutual": false,
-                    }, (err, msg) => {
-                        res.json({
-                            msg: "成功关注"
-                        })
-                    })
-                }
-            })
-        }
-        // 如果对方曾经或现在关注过你
-        else {
-            let otherLike = msg.state.isLike
-            user_attention.findOne({
-                user: userId,
-                attention: attentionId
-            }, (err, msg) => {
-                // 如果已经存在自己的关注记录
-                if (msg) {
-                    let selfIsLike = !msg.state.isLike;
-                    user_attention.update({
-                        user: userId,
-                        attention: attentionId
-                    }, {
-                            $set: {
-                                "state.isLike": selfIsLike
-                            }
-                        }, (err, msg) => { })
-
-                    // 修改自己的相互关注状态
-                    user_attention.update({
-                        user: userId,
-                        attention: attentionId
-                    }, {
-                            $set: {
-                                "state.mutual": otherLike && selfIsLike
-                            }
-                        }, (err, msg) => { })
-
-                    // 修改对方的相互关注状态
-                    user_attention.update({
-                        user: attentionId,
-                        attention: userId
-                    }, {
-                            $set: {
-                                "state.mutual": otherLike && selfIsLike
-                            }
-                        }, (err, msg) => {
-                            res.json({
-                                msg: selfIsLike ? "相互关注成功" : "取消关注成功"
-                            })
-                        })
-
-                } else {
-                    user_attention.create({
-                        user: userId,
-                        attention: attentionId,
-                        "state.isLike": true,
-                        "state.mutual": otherLike,
-                    }, (err, msg) => {
-                        res.json({
-                            msg: "成功关注"
-                        })
-                    })
-                }
-            })
-        }
-    })
-})
-
-// 获取已关注
-router.get('/getFans', (req, res) => {
-    // let userId = req.query.userId;
-    // let attentionId = req.query.attentionId;
-
-    let userId = "5aede8a202f25993ec1902f2"
-    let attention = "5aede517d145309110b2bf55"
-    user_attention.find({
-        attention: userId,
-        // "state.isLike":true
-    }, (err, msg) => {
-        res.json(msg)
-    })
-})
-// 查看别人的关注列表，除了返回他关注的人，还需要返回关注的人跟自己的关注关系
-router.get('/getOtherList', (req, res) => {
-    // let userId = req.query.userId;
-    // let attentionId = req.query.attentionId;
-
-    let otherId = "5aede8a202f25993ec1902f2"
-    let myId = "5aede6ee522ac98d08e34063"
-
-    let result = [];
-    let obj = {}
-    user_attention.find({
-        user: otherId
-    }, (err, msg) => {
-        let msgLength = msg.length;
-
-        // 找出对方关注列表的人，然后返回这些人跟自己的关系和其他相关数据
-        msg.map((item, index) => {
-            let otherAttention = item.attention;
-            user_attention.findOne({
-                user: myId,
-                attention: otherAttention
-            }, (err, msg) => {
-                if (msg) {
-                    obj = {
-                        user: myId,
-                        attention: otherAttention,
-                        state: msg.state
-                    }
-                }
-                // 如果没有这条文档，那肯定没有关注过，也就不可能会有互粉这些
-                else {
-                    obj = {
-                        user: myId,
-                        attention: otherAttention,
-                        state: { isLike: false, mutual: false }
-                    }
-                }
-                result.push(obj);
-                // 没有用propmis，简单粗暴用这个解决异步查询
-                if (index >= msgLength - 1) {
-                    res.json(result)
-                }
-            })
-        })
-    })
-})
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports = router

@@ -1,7 +1,3 @@
-
-
-
-
 const mongoose = require('mongoose');
 const db = require('./db.js');
 const Schema = mongoose.Schema;
@@ -27,6 +23,7 @@ const option = {
         type: Schema.Types.ObjectId,
         ref: "user_security"
     }],
+    // 点赞数
     praiseCount: Number,
     comment: [{
         otherUserComment: {},

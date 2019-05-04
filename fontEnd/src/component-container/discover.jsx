@@ -66,7 +66,6 @@ class discover extends Component {
     getRecord() {
         let {
             async_getRecord,
-            // store_recordData
         } = this.props.actionMethod;
         let {
             tempRecord,
@@ -149,7 +148,7 @@ class discover extends Component {
         }
 
         const tabs = [
-            { title: <Badge text={''} overflowCount={20}>热门</Badge> },
+            { title: <Badge text={''} overflowCount={20}>推荐</Badge> },
             { title: <Badge text={''} overflowCount={20}>最新</Badge> },
         ];
 

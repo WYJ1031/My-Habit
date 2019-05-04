@@ -63,21 +63,21 @@ class mycenter extends Component {
                     multipleLine
                     onClick={() => { }}
                 >
-                    {/* <Link to={`/record/${item.habit._id}/`}> */}
-                    <div>
-                        <div className="per-habit-name">{item.habit.habitName}</div>
-                        {
-                            (item.habit.userCount == 1) ?
-                            (
-                                <List.Item.Brief className="per-habit-brief">目前只有你加入哦，快叫上其他小伙伴~</List.Item.Brief>
-                            ) :
-                            (
-                                <List.Item.Brief className="per-habit-brief">有{item.habit.userCount}个小伙伴在一起哦~</List.Item.Brief>
-                            )
+                    <Link to={`/record/${item.habit._id}/`}>
+                        <div>
+                            <div className="per-habit-name">{item.habit.habitName}</div>
+                            {
+                                (item.habit.userCount == 1) ?
+                                (
+                                    <List.Item.Brief className="per-habit-brief">目前只有你加入哦，快叫上其他小伙伴~</List.Item.Brief>
+                                ) :
+                                (
+                                    <List.Item.Brief className="per-habit-brief">有{item.habit.userCount}个小伙伴在一起哦~</List.Item.Brief>
+                                )
 
-                        }
-                    </div>
-                    {/* </Link> */}
+                            }
+                        </div>
+                    </Link>
                 </List.Item>
             )
         })
@@ -122,7 +122,7 @@ class mycenter extends Component {
                 <div className={`${style.otherHabit} otherHabit`}>
                     <h3 className={`${style.title}`}>我的习惯记录</h3>
                     <List>
-                        {this.habitList()}
+                        {this.props.habit.habitInfo.length>0 ? this.habitList() : (<span className={`${style.nodata}`}>还没有纪录哦~</span>)}
                     </List>
                 </div>
             </div>

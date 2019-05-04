@@ -112,6 +112,7 @@ class wrap extends Component {
                     type: 'getNewRecord'
                 })
             } else if (tabIndex === 0) {
+                // 这里需要同步逻辑
                 async_getRecord({
                     userId,
                     lastRecord: '',
