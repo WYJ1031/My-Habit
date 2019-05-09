@@ -1,6 +1,3 @@
-
-
-
 const express = require('express');
 const socket_io = require('socket.io');
 const mongoose = require('mongoose');
@@ -40,8 +37,6 @@ const router = express.Router();
 const db = require('../models/db.js')
 const habit_all = require('../models/habit_all.js')
 const habit_record = require('../models/habit_record.js')
-const user_info = require('../models/user_info.js')
-const user_attention = require('../models/user_attention.js')
 const user_collect = require('../models/user_collect.js')
 const user_habit = require('../models/user_habit.js')
 
@@ -336,8 +331,8 @@ router.post('/record', imageUpload.array('recordImage'), (req, res) => {
     let urls = []
     req.files.map((item, index) => {
         let url = item.path.replace(/static\//, "").replace("\\", "/");
-        return urls.push(`http://127.0.0.1:3008/${url}`);
-        // return urls.push(`http://localhost:3000/${url}`);
+        return urls.push(`http://localhost:3008/${url}`);
+        // return urls.push(`http://123.206.31.228:3008/${url}`);
     })
 
     habit_record.create({
@@ -431,65 +426,93 @@ router.get('/getRecord', (req, res) => {
     }
     if (type === 'getHotRecord') {
         habit_all.find({},(err, msg) => {
-            // 所有用户都存在这个数组里
-            let allUserLikeArr = [];
-            // 临时变量
-            let tempUserArr = [];
-            // 判断当前用户是否在习惯中的标志
-            let userIndex = -1;
-            for (let i=0; i<msg.length; i++) {
-                // indexOf 获取在当前习惯用户数组中当前用户的 index，没有就是-1
-                userIndex = msg[i].userArr.indexOf(userId);
-                // 大于-1说明这个习惯有当前用户
-                if (userIndex > -1) {
-                    // 临时数组存的是把当前用户去掉的数组
-                    tempUserArr = msg[i].userArr;
-                    tempUserArr.splice(userIndex, 1);
-                    // 然后把没有当前用户的数组拼接起来
-                    allUserLikeArr = allUserLikeArr.concat(tempUserArr);
-                }
-            }
-            // 出现次数统计
-            // console.log('-------allUserLikeArr--------\n', allUserLikeArr);
-            let targetUserLike = allUserLikeArr.reduce((p, k) => (p[k]++ || (p[k] = 1), p), {});
-            // console.log('-------result--------\n', targetUserLike);
-            // 在排序一下
-            let MostUserLikeArr = Object.keys(targetUserLike).sort((a,b)=>{
-                return targetUserLike[b]-targetUserLike[a];
-            });
-            // console.log('-------MostUserLikeArr--------\n', MostUserLikeArr);
-            console.log('-------MostUserLikeArr[0]--------\n', MostUserLikeArr[0]);
-            console.log(typeof(userId), typeof(MostUserLikeArr[0]))
-            habit_record.find({
-                user: ObjectID(MostUserLikeArr[0]),
-                _id: { $lt: lastRecord ? lastRecord : id }
-            }).populate({
-                path: 'user'
-            }).populate({
-                path: 'habit'
-            }).populate({
-                path: 'comment.user'
-            }).sort({ '_id': -1 }).limit(3).exec((err, msg) => {
-                if (msg.length === 0) {
-                    findObj = {
-                        praiseCount: { $gt: 1 },
-                        _id: { $lt: lastRecord ? lastRecord : id }
+            if (msg) {
+                // 所有用户都存在这个数组里
+                let allUserLikeArr = [];
+                // 临时变量
+                let tempUserArr = [];
+                // 判断当前用户是否在习惯中的标志
+                let userIndex = -1;
+                for (let i=0; i<msg.length; i++) {
+                    // indexOf 获取在当前习惯用户数组中当前用户的 index，没有就是-1
+                    userIndex = msg[i].userArr.indexOf(userId);
+                    // 大于-1说明这个习惯有当前用户
+                    if (userIndex > -1) {
+                        // 临时数组存的是把当前用户去掉的数组
+                        tempUserArr = msg[i].userArr;
+                        tempUserArr.splice(userIndex, 1);
+                        // 然后把没有当前用户的数组拼接起来
+                        allUserLikeArr = allUserLikeArr.concat(tempUserArr);
                     }
-                    habit_record.find(findObj).populate({
-                        path: 'user'
-                    }).populate({
-                        path: 'habit'
-                    }).populate({
-                        path: 'comment.user'
-                    }).sort({ '_id': -1 }).limit(3).exec((err, msg) => {
-                        console.log('msg:', msg)
+                }
+                // 出现次数统计
+                // console.log('-------allUserLikeArr--------\n', allUserLikeArr);
+                let targetUserLike = allUserLikeArr.reduce((p, k) => (p[k]++ || (p[k] = 1), p), {});
+                // console.log('-------result--------\n', targetUserLike);
+                // 在排序一下
+                let MostUserLikeArr = Object.keys(targetUserLike).sort((a,b)=>{
+                    return targetUserLike[b]-targetUserLike[a];
+                });
+                // console.log('-------MostUserLikeArr--------\n', MostUserLikeArr);
+                console.log('-------MostUserLikeArr[0]--------\n', MostUserLikeArr[0]);
+                console.log(typeof(userId), typeof(MostUserLikeArr[0]))
+                habit_record.find({
+                    user: ObjectID(MostUserLikeArr[0]),
+                    _id: { $lt: lastRecord ? lastRecord : id }
+                }).populate({
+                    path: 'user'
+                }).populate({
+                    path: 'habit'
+                }).populate({
+                    path: 'comment.user'
+                }).sort({ '_id': -1 }).limit(3).exec((err, msg) => {
+                    if (msg.length === 0) {
+                        findObj = {
+                            praiseCount: { $gt: 1 },
+                            _id: { $lt: lastRecord ? lastRecord : id }
+                        }
+                        habit_record.find(findObj).populate({
+                            path: 'user'
+                        }).populate({
+                            path: 'habit'
+                        }).populate({
+                            path: 'comment.user'
+                        }).sort({ '_id': -1 }).limit(3).exec((err, msg) => {
+                            console.log('msg:', msg)
+                            let isHaveDate = '';
+                            if (msg.length > 0) {
+                                isHaveDate = '1';
+                            } else {
+                                isHaveDate = '0'
+                            }
+                            // 最新的评论在最上面，最早的评论在下面
+                            let margeComment = msg.map((item) => {
+                                if (item.comment[0]) {
+                                    item.comment.sort((n1, n2) => {
+                                        return n2.time - n1.time
+                                    })
+                                }
+                                return item
+                            })
+                            let isJoinHabit = '';
+                            let lastId = msg.length > 0 ? msg[msg.length - 1]._id : lastRecord;
+                            res.json({
+                                userId,
+                                habitId,
+                                isJoinHabit,
+                                isHaveDate,
+                                lastRecord: lastId,
+                                type: lastRecord ? 'up' : 'list',
+                                recordList: margeComment
+                            })
+                        })
+                    } else {
                         let isHaveDate = '';
                         if (msg.length > 0) {
                             isHaveDate = '1';
                         } else {
                             isHaveDate = '0'
                         }
-                        // 最新的评论在最上面，最早的评论在下面
                         let margeComment = msg.map((item) => {
                             if (item.comment[0]) {
                                 item.comment.sort((n1, n2) => {
@@ -509,35 +532,9 @@ router.get('/getRecord', (req, res) => {
                             type: lastRecord ? 'up' : 'list',
                             recordList: margeComment
                         })
-                    })
-                } else {
-                    let isHaveDate = '';
-                    if (msg.length > 0) {
-                        isHaveDate = '1';
-                    } else {
-                        isHaveDate = '0'
                     }
-                    let margeComment = msg.map((item) => {
-                        if (item.comment[0]) {
-                            item.comment.sort((n1, n2) => {
-                                return n2.time - n1.time
-                            })
-                        }
-                        return item
-                    })
-                    let isJoinHabit = '';
-                    let lastId = msg.length > 0 ? msg[msg.length - 1]._id : lastRecord;
-                    res.json({
-                        userId,
-                        habitId,
-                        isJoinHabit,
-                        isHaveDate,
-                        lastRecord: lastId,
-                        type: lastRecord ? 'up' : 'list',
-                        recordList: margeComment
-                    })
-                }
-            })
+                })    
+            }
         })
     } else if (type === 'myCollect') {
         // 收藏的图文

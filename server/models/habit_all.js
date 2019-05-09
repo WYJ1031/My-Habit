@@ -1,7 +1,3 @@
-
-
-
-
 const mongoose = require('mongoose');
 const db = require('./db.js');
 const Schema = mongoose.Schema;

@@ -10,10 +10,7 @@ var option = {
     user: {
         type: Schema.Types.ObjectId,
         ref: "user_security"
-    },
-    headPic: String,
-    attitude: String
-    
+    }    
 }
 const collectionName = "user_info";
 const user_info = db.model(collectionName, new Schema(option), collectionName)

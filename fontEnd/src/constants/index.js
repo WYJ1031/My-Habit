@@ -63,10 +63,6 @@ export const IS_JOIN_HABIT = "IS_JOIN_HABIT";
  /**
   * 注册账号
   * 登录账号
-  * 修改密码
-  * 修改头像
-  * 修改个性签名
-  * 修改性别
   * 搜索习惯
   * 创建习惯
   * 加入习惯
@@ -79,9 +75,4 @@ export const IS_JOIN_HABIT = "IS_JOIN_HABIT";
   * 评论
   * 点赞
   * 取消点赞
-  * 关注
-  * 取消关注
-  * 
-  
-  * 
   */
